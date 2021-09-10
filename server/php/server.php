@@ -12,7 +12,7 @@ switch($path){
     case '/':
         require __DIR__ . '/../../client/index.html';
         break;
-    case '../server/php':
+    case '../server/php/server.php':
         $payment = new MercadoPago\Payment();
         $payment->transaction_amount = (float)$_POST['transactionAmount'];
         $payment->token = $_POST['token'];

@@ -70,7 +70,7 @@ function loadCardForm() {
                     identificationType,
                 } = cardForm.getCardFormData();
             
-                fetch("../server/php", {
+                fetch("../server/php/server.php", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
