@@ -13,6 +13,8 @@ switch($path){
         require __DIR__ . '/../../client/index.html';
         break;
     case '../server/php/server.php':
+        $json = file_get_contents("php://input");
+        $data = json_decode($json);
         $payment = new MercadoPago\Payment();
         $payment->transaction_amount = (float)$_POST['transactionAmount'];
         $payment->token = $_POST['token'];
