@@ -1,6 +1,6 @@
 <?php
 
-require __DIR__  . '/vendor/autoload.php';
+require __DIR__  . 'vendor/autoload.php';
 
 //REPLACE WITH YOUR ACCESS TOKEN AVAILABLE IN: https://www.mercadopago.com/developers/panel
 MercadoPago\SDK::setAccessToken("TEST-11762472748563-081923-f6c1d5d1d637d865580d438da9d492c8-448109497");
