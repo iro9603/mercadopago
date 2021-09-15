@@ -1,47 +1,53 @@
 <?php
 
-require __DIR__  . 'vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
 //REPLACE WITH YOUR ACCESS TOKEN AVAILABLE IN: https://www.mercadopago.com/developers/panel
 MercadoPago\SDK::setAccessToken("TEST-11762472748563-081923-f6c1d5d1d637d865580d438da9d492c8-448109497");
 
-$path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+$path = $_SERVER["https://web-proyecto-iro.azurewebsites.net/server/php/server.php"];
 
 switch($path){
     case '':
     case '/':
         require __DIR__ . '/../../client/index.html';
         break;
-    case '../server/php/server.php':
+    case '/create_preference':
         $json = file_get_contents("php://input");
         $data = json_decode($json);
-        $payment = new MercadoPago\Payment();
-        $payment->transaction_amount = (float)$_POST['transactionAmount'];
-        $payment->token = $_POST['token'];
-        $payment->description = $_POST['description'];
-        $payment->installments = (int)$_POST['installments'];
-        $payment->payment_method_id = $_POST['paymentMethodId'];
-        $payment->issuer_id = (int)$_POST['issuer'];
 
-        $payer = new MercadoPago\Payer();
-        $payer->email = $_POST['email'];
-        $payer->identification = array( 
-            "type" => $_POST['docType'],
-            "number" => $_POST['docNumber']
+        $preference = new MercadoPago\Preference();
+
+        $item = new MercadoPago\Item();
+        $item->title = $data->description;
+        $item->quantity = $data->quantity;
+        $item->unit_price = $data->price;
+
+        $preference->items = array($item);
+
+        $preference->back_urls = array(
+            "success" => "http://localhost:8080/feedback",
+            "failure" => "http://localhost:8080/feedback", 
+            "pending" => "http://localhost:8080/feedback"
         );
-        $payment->payer = $payer;
+        $preference->auto_return = "approved"; 
 
-        $payment->save(); 
+        $preference->save();
 
         $response = array(
-            'status' => $payment->status,
-            'message' => $payment->status_detail,
-            'id' => $payment->id
-        );
+            'id' => $preference->id,
+        ); 
         echo json_encode($response);
-        break; 
-        
-    //Serve static resources
+        break;        
+    case '/feedback':
+        $respuesta = array(
+            'Payment' => $_GET['payment_id'],
+            'Status' => $_GET['status'],
+            'MerchantOrder' => $_GET['merchant_order_id']        
+        ); 
+        echo json_encode($respuesta);
+        break;
+    //Server static resources
     default:
         $file = __DIR__ . '/../../client' . $path;
         $extension = end(explode('.', $path));
@@ -52,6 +58,6 @@ switch($path){
             case 'png': $content = 'image/png'; break;
         }
         header('Content-Type: '.$content);
-        readfile($file);
-        break;
+        readfile($file);          
 }
+?>
