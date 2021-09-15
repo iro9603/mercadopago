@@ -12,7 +12,7 @@ switch($path){
     case '/':
         require __DIR__ . '/../../client/index.html';
         break;
-    case '/create_preference':
+    case 'https://web-proyecto-iro.azurewebsites.net/server/php/server.php':
         $json = file_get_contents("php://input");
         $data = json_decode($json);
 
